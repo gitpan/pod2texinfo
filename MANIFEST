@@ -1,0 +1,6 @@
+MANIFEST
+Makefile
+Makefile.PL
+README
+pod2texinfo
+pod2texinfo.tex

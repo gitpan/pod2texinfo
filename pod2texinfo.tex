@@ -1,0 +1,261 @@
+@c TeXInfo document produced by pod2texinfo from "pod2texinfo.pod".
+@c The followings need be defined in the preamble of this document:
+@c\def\C++{{\rm C\kern-.05em\raise.3ex\hbox{\footnotesize ++}}}
+@c\setlength{\parindent}{0pt}
+
+@section POD2TEXINFO
+@cindex POD2TEXINFO
+
+@subheading NAME
+
+@code{pod2texinfo} --- Perl Online Documentation to TeXinfo
+
+@subheading SYNOPSIS
+
+@code{pod2texinfo} filters Perl pod documents to TeXinfo documents.
+
+@subheading Usage
+
+@code{pod2texinfo perl_doc_entry.pod}
+
+this will write to a file @file{perl_doc_entry.tex}.
+
+@subheading DESCRIPTION
+
+What @code{pod2texinfo} does:
+
+@itemize @bullet
+
+@item
+Pod file @file{perl_doc_entry.pod}
+
+@cindex Pod file @file{perl_doc_entry.pod}
+
+is filtered to @file{perl_doc_entry.tex}.
+
+@item
+Indented paragraphs
+
+@cindex Indented paragraphs
+
+are translated into @code{@@example ... @@end example}.
+
+@item
+other paragraphs are translated into strings with TeX special characters escaped.
+
+@cindex other paragraphs are translated into strings with TeX special characters escaped.
+
+@end itemize
+
+@subsubheading How headings are handled
+
+@cindex How headings are handled
+
+The headings are converted from their POD form into a TeXInfo equivalent, and
+the uncommon ones are indexed:
+
+@table @asis
+
+@item @code{=head1 heading} command
+@vindex @code{=head1 heading} command
+
+is translated into
+@example
+        @subheading heading
+        @cindex heading
+@end example
+
+@item @code{=head2 heading} command
+@vindex @code{=head2 heading} command
+
+is translated into
+@example
+        @subsubheading heading
+        @cindex heading
+@end example
+
+only when heading does not match frequent patterns such as
+DESCRIPTION, DIAGNOSTICS,... otherwise it is translated into:
+@example
+        @subsubheading heading
+@end example
+
+@end table
+
+@subsubheading How lists are handled
+
+@cindex How lists are handled
+
+@table @asis
+
+@item @code{=over N} command
+@vindex @code{=over N} command
+
+is translated into
+@example
+        @itemize
+@end example
+
+if following @code{=item} starts with *,
+@example
+        @enumerate
+@end example
+
+if following @code{=item} starts with 1.,
+@example
+        @table
+@end example
+
+if else.
+
+Indentation level N is ignored.
+
+@item @code{=back} command
+@vindex @code{=back} command
+
+is translated, as appropriate, into
+@example
+        @end itemize
+@end example
+
+if started with @code{@@itemize},
+@example
+        @end enumerate
+@end example
+
+if started with @code{@@enumerate},
+@example
+        @end table
+@end example
+
+if started with @code{@@table}.
+
+@item @code{=item * heading} command
+@vindex @code{=item * heading} command
+
+is translated into
+@example
+        @item
+        heading
+@end example
+
+@item @code{=item 1. heading} command
+@vindex @code{=item 1. heading} command
+
+is translated into
+@example
+        @item
+        heading
+@end example
+
+@item @code{=item heading} command(other)
+@vindex @code{=item heading} command(other)
+
+is translated into
+@example
+        @item
+        heading
+        @cindex heading
+@end example
+
+@end table
+
+@subsubheading How POD quotes are translated
+
+@cindex How POD quotes are translated
+
+In heading text, and other paragraphs, the following translation of pod
+quotes are done, and then TeX special characters are escaped after that.
+
+@table @asis
+
+@item @code{I}<text>
+@@emph@{text@}
+
+@item @code{B}<text>
+@@strong@{text@},
+
+@item @code{S}<text>
+text1,
+where text1 is a string with blank characters replaced with ~,
+
+@item @code{C}<text>
+@@code@{text2@},
+where text2 is a string with TeX special characters escaped to
+obtain a literal printout,
+
+@item @code{E}<text> (HTML escape)
+TeXInfo escaped string,
+
+@item @code{L}<text>
+This may include a URL or a referencing string as is done by pod2man,
+
+@item @code{F}<file>
+@@file@{file@},
+
+@item @code{Z}<>
+a null string,
+
+@end table
+
+@subheading Installation
+
+@cindex Installation
+
+The package can be acquired from CPAN (@url{http://www.cpan.org/}) or from
+@url{http://www.geocities.com/CapeCanaveral/Lab/1862/script/pod2texinfo-10.tgz}
+
+This installation is the same as any other Perl 5 module:
+
+@table @asis
+
+@item un-tar the tarball
+@cindex un-tar the tarball
+
+@item @code{perl Makefile.PL}
+@vindex @code{perl Makefile.PL}
+
+@item @code{make}
+@vindex @code{make}
+
+@item @code{make install}
+@vindex @code{make install}
+
+@end table
+
+The documentation is contained in the @file{pod2texinfo} file, in POD format.  The
+man pages will install automatically, or may be extracted manually by:
+
+@code{pod2man pod2texinfo } pod2texinfo.man>
+
+@subheading SEE ALSO
+
+A version of this documentation can be found at
+@url{http://www.geocities.com/CapeCanaveral/Lab/1862/script/pod2texinfo.html}
+
+@subheading Notes
+
+@subsubheading Bugs
+
+@cindex Bugs
+
+If HTML escapes @code{E}<text> other than @code{E}<amp>,@code{E}<lt>,@code{E}<gt>,@code{E}<quot> are
+used in @code{C}<>, translation will produce wrong character strings.
+Translation of HTML escapes of various European accents might be wrong.
+
+@subsubheading Version
+
+@cindex Version
+
+Version 1.0.  November 25, 1998.
+
+@subsubheading Author
+
+@cindex Author
+
+This script is a modified version of @code{pod2latex}, which itself is a
+modified version of @code{pod2man}.
+
+Randall Maas @email{randym@@acm.org} change LaTeX to TeXInfo and made a few
+appropriate changes
+
